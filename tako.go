@@ -42,6 +42,7 @@ func New() *Engine {
 	e := &Engine{}
 
 	e.routes = make(map[string]Route)
+	e.middleware = make([]HandlerFunc, 0)
 	e.pool.New = func() interface{} {
 		return e.allocateContext()
 	}
