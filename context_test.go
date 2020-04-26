@@ -14,7 +14,7 @@ func TestGetContext_ExpectContextNotNull(t *testing.T) {
 	c := e.Context()
 	// assert
 	if c == nil {
-		t.Error("Failed create context from engine")
+		t.Error()
 	}
 }
 
@@ -30,9 +30,6 @@ func TestUpdate_ExpectContextRequestWasUpdated(t *testing.T) {
 	if c.Request == nil {
 		t.Error("Failed update HTTP req")
 	}
-	if c.Response == nil {
-		t.Error("Failed update HTTP res")
-	}
 }
 
 func TestUpdate_ExpectContextResponseWasUpdated(t *testing.T) {
@@ -45,7 +42,7 @@ func TestUpdate_ExpectContextResponseWasUpdated(t *testing.T) {
 	c.Update(req, res)
 	// assert
 	if c.Response == nil {
-		t.Error("Failed update HTTP res")
+		t.Error()
 	}
 }
 
@@ -61,7 +58,7 @@ func TestString_ExpectHttpStatus200(t *testing.T) {
 	err := c.String(http.StatusOK, TestingMessage)
 	// assert
 	if err != nil && res.Body.String() == TestingMessage {
-		t.Error("Failed write string response")
+		t.Error(err)
 	}
 }
 
@@ -76,7 +73,7 @@ func TestJSON_ExpectHttpStatus200(t *testing.T) {
 	err := c.JSON(http.StatusOK, TestModel{"TESTING MESSAGE"})
 	// assert
 	if err != nil || res.Body.String() == "{}" {
-		t.Error("Failed write string response")
+		t.Error(err)
 	}
 }
 
@@ -92,11 +89,10 @@ func TestBind_ExpectNoError(t *testing.T) {
 	err := c.Bind(m)
 	// assert
 	if err != nil && m.Message != "TEST_MESSAGE" {
-		t.Errorf("Failed write string response %s", err)
+		t.Error(err)
 	}
 }
 
 type TestModel struct {
 	Message string
 }
-

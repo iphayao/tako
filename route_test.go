@@ -24,7 +24,7 @@ func TestGET_ExpectReturnRoute(t *testing.T) {
 	route := e.GET("/tests", MockHandler())
 	// assert
 	if route == nil || route.Method != http.MethodGet {
-		t.Error("Failed create handle GET method route")
+		t.Error()
 	}
 }
 
@@ -35,7 +35,7 @@ func TestGET_ExpectCorrectRouteKey(t *testing.T) {
 	e.GET("/tests", MockHandler())
 	// assert
 	if _, ok := e.routes["GET/tests"]; !ok {
-		t.Error("Failed create handle GET method route key")
+		t.Error()
 	}
 }
 
@@ -46,7 +46,7 @@ func TestPOST_ExpectReturnRoute(t *testing.T) {
 	route := e.POST("/tests", MockHandler())
 	// assert
 	if route == nil || route.Method != http.MethodPost {
-		t.Error("Failed create handle POST method route")
+		t.Error()
 	}
 }
 
@@ -57,7 +57,7 @@ func TestPOST_ExpectCorrectRouteKey(t *testing.T) {
 	e.POST("/tests", MockHandler())
 	// assert
 	if _, ok := e.routes["POST/tests"]; !ok {
-		t.Error("Failed create handle POST method route key")
+		t.Error()
 	}
 }
 
@@ -68,7 +68,7 @@ func TestDELETE_ExpectReturnRoute(t *testing.T) {
 	route := e.DELETE("/tests", MockHandler())
 	// assert
 	if route == nil || route.Method != http.MethodDelete {
-		t.Error("Failed create handle DELETE method route")
+		t.Error()
 	}
 }
 
@@ -79,7 +79,7 @@ func TestDELETE_ExpectCorrectRouteKey(t *testing.T) {
 	e.DELETE("/tests", MockHandler())
 	// assert
 	if _, ok := e.routes["DELETE/tests"]; !ok {
-		t.Error("Failed create handle POST method route key")
+		t.Error()
 	}
 }
 
@@ -90,7 +90,7 @@ func TestPUT_ExpectReturnRoute(t *testing.T) {
 	route := e.PUT("/tests", MockHandler())
 	// assert
 	if route == nil || route.Method != http.MethodPut {
-		t.Error("Failed create handle PUT method route")
+		t.Error()
 	}
 }
 
@@ -101,7 +101,7 @@ func TestPUT_ExpectCorrectRouteKey(t *testing.T) {
 	e.PUT("/tests", MockHandler())
 	// assert
 	if _, ok := e.routes["PUT/tests"]; !ok {
-		t.Error("Failed create handle POST method route key")
+		t.Error()
 	}
 }
 
@@ -112,7 +112,7 @@ func TestPATCH_ExpectReturnRoute(t *testing.T) {
 	route := e.PATCH("/tests", MockHandler())
 	// assert
 	if route == nil || route.Method != http.MethodPatch {
-		t.Error("Failed create handle PATCH method route")
+		t.Error()
 	}
 }
 
@@ -123,7 +123,6 @@ func TestPATCH_ExpectCorrectRouteKey(t *testing.T) {
 	e.PATCH("/tests", MockHandler())
 	// assert
 	if _, ok := e.routes["PATCH/tests"]; !ok {
-		t.Error("Failed create handle POST method route key")
+		t.Error()
 	}
 }
-

@@ -13,7 +13,7 @@ func TestNewEngine_ExpectEngineNotNull(t *testing.T) {
 	e := New()
 	// assert
 	if e == nil {
-		t.Error("Failed create new engine")
+		t.Error()
 	}
 }
 
@@ -24,7 +24,7 @@ func TestUse_ExpectAddedMiddleware(t *testing.T) {
 	e.Use(MockMiddleware())
 	// assert
 	if len(e.middleware) == 0 {
-		t.Error("Failed add middleware to engine")
+		t.Error()
 	}
 }
 
@@ -35,7 +35,7 @@ func TestAddRoute_ExpectAddedRoute(t *testing.T) {
 	e.addRoute(http.MethodGet, "/tests", MockHandler())
 	// assert
 	if len(e.routes) == 0 {
-		t.Error("Failed add route GET method")
+		t.Error()
 	}
 }
 
@@ -46,7 +46,7 @@ func TestAddRoute_ExpectCorrectRouteKey(t *testing.T) {
 	e.addRoute(http.MethodGet, "/tests", MockHandler())
 	// assert
 	if _, ok := e.routes["GET/tests"]; !ok {
-		t.Error("Failed route key not found")
+		t.Error()
 	}
 }
 
@@ -59,7 +59,7 @@ func TestAddRoute_AfterAddedMiddleware_Expect2Handlers(t *testing.T) {
 	// assert
 	r, _ := e.routes["GET/tests"]
 	if len(r.Handlers) != 2 {
-		t.Error("Failed add routed after middleware")
+		t.Error()
 	}
 }
 
@@ -154,7 +154,6 @@ func TestServeHTTP_ExpectResponseStatusNotFound(t *testing.T) {
 		t.Error(w.Code)
 	}
 }
-
 
 //func TestStart_ExpectNoError(t *testing.T) {
 //	// arrange
