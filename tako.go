@@ -50,9 +50,13 @@ func New() *Engine {
 	return e
 }
 
+func (e *Engine) Context() *Context {
+	return e.pool.Get().(*Context)
+}
+
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	c := e.pool.Get().(*Context)
-	c.update(r, w)
+	c := e.Context()
+	c.Update(r, w)
 
 	if err := e.handleHTTPRequest(c); err != nil {
 		w.WriteHeader(http.StatusNotFound)

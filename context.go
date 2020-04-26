@@ -37,6 +37,12 @@ func (c *Context) Render(code int, value interface{}) error {
 	return enc.Encode(value)
 }
 
+func (c *Context) Bind(t interface{}) error {
+	enc := json.NewDecoder(c.Request.Body)
+
+	return enc.Decode(t)
+}
+
 func (c *Context) Status(code int) {
 	c.Response.WriteHeader(code)
 }
@@ -49,16 +55,10 @@ func (c *Context) writeContentType(value string) {
 	}
 }
 
-func (c *Context) update(r *http.Request, w http.ResponseWriter) {
+func (c *Context) Update(r *http.Request, w http.ResponseWriter) {
 	c.Request = r
 	c.Response = w
 	c.Method = r.Method
 	c.Headers = r.Header
 	c.Params = make(map[string]string)
-}
-
-func (c *Context) reset() {
-	c.Request = nil
-	c.Response = nil
-	c.Method = ""
 }
