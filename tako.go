@@ -24,15 +24,8 @@ type Path struct {
 	Params  map[int]string
 }
 
-type Route struct {
-	Method    string
-	Path      Path
-	Handlers  []HandlerFunc
-	pathParam []string
-	engine    *Engine
-}
-
 type Engine struct {
+	Router
 	pool       sync.Pool
 	routes     map[string]Route
 	middleware []HandlerFunc
@@ -41,6 +34,7 @@ type Engine struct {
 func New() *Engine {
 	e := &Engine{}
 
+	e.Router.engine = e
 	e.routes = make(map[string]Route)
 	e.middleware = make([]HandlerFunc, 0)
 	e.pool.New = func() interface{} {
@@ -63,6 +57,11 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	e.pool.Put(c)
+}
+
+func (e *Engine) Start(address string) error {
+	log.Printf("HTTP server started on %s", address)
+	return http.ListenAndServe(address, e)
 }
 
 func (e *Engine) Use(middleware HandlerFunc) {
@@ -89,17 +88,12 @@ func (e *Engine) applyMiddleware(r *Route) {
 	}
 }
 
-func (e *Engine) Start(address string) error {
-	log.Printf("HTTP server started on %s", address)
-	return http.ListenAndServe(address, e)
-}
-
 func (e *Engine) handleHTTPRequest(c *Context) error {
 	method := c.Request.Method
 	path := c.Request.URL.Path
 
-	pKey, paths := parseReqPath(path)
-	if route, ok := e.routes[method+pKey]; ok {
+	pathKey, paths := parseReqPath(path)
+	if route, ok := e.routes[method+pathKey]; ok {
 		for k, v := range route.Path.Params {
 			c.Params[v] = paths[k]
 		}
@@ -118,35 +112,6 @@ func (e *Engine) handleHTTPRequest(c *Context) error {
 
 func (e *Engine) allocateContext() *Context {
 	return &Context{engine: e, KeysMutex: &sync.RWMutex{}}
-}
-
-// Setup handles for each Request
-func (e *Engine) Handle(method string, path string, h HandlerFunc) *Route {
-	return e.handler(method, path, h)
-}
-
-func (e *Engine) GET(path string, h HandlerFunc) *Route {
-	return e.handler(http.MethodGet, path, h)
-}
-
-func (e *Engine) POST(path string, h HandlerFunc) *Route {
-	return e.handler(http.MethodPost, path, h)
-}
-
-func (e *Engine) DELETE(path string, h HandlerFunc) *Route {
-	return e.handler(http.MethodDelete, path, h)
-}
-
-func (e *Engine) PUT(path string, h HandlerFunc) *Route {
-	return e.handler(http.MethodPut, path, h)
-}
-
-func (e *Engine) PATCH(path string, h HandlerFunc) *Route {
-	return e.handler(http.MethodPatch, path, h)
-}
-
-func (e *Engine) handler(method string, path string, h HandlerFunc) *Route {
-	return e.addRoute(method, path, h)
 }
 
 func (r *Route) PathKey() string {
