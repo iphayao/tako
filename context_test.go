@@ -93,6 +93,21 @@ func TestBind_ExpectNoError(t *testing.T) {
 	}
 }
 
+func TestSetStatus_ExpectNoError(t *testing.T) {
+	// arrange
+	e := New()
+	c := e.Context()
+	req := httptest.NewRequest(http.MethodGet, "/tests", bytes.NewReader([]byte("")))
+	res := httptest.NewRecorder()
+	c.Update(req, res)
+	// act
+	err := c.SetStatus(http.StatusBadRequest)
+	// assert
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 type TestModel struct {
 	Message string
 }

@@ -37,6 +37,11 @@ func (c *Context) Render(code int, value interface{}) error {
 	return enc.Encode(value)
 }
 
+func (c *Context) SetStatus(code int) error {
+	c.Status(code)
+	return nil
+}
+
 func (c *Context) Bind(t interface{}) error {
 	enc := json.NewDecoder(c.Request.Body)
 
