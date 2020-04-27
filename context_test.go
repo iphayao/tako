@@ -101,7 +101,7 @@ func TestSetStatus_ExpectNoError(t *testing.T) {
 	res := httptest.NewRecorder()
 	c.Update(req, res)
 	// act
-	err := c.SetStatus(http.StatusBadRequest)
+	err := c.Status(http.StatusBadRequest)
 	// assert
 	if err != nil {
 		t.Error(err)

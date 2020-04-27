@@ -19,26 +19,34 @@ type Context struct {
 	KeysMutex *sync.RWMutex
 }
 
-func (c *Context) JSON(code int, value interface{}) error {
-	c.writeContentType("application/json")
-	return c.Render(code, value)
+func (c *Context) Update(r *http.Request, w http.ResponseWriter) {
+	c.Request = r
+	c.Response = w
+	c.Method = r.Method
+	c.Headers = r.Header
+	c.Params = make(map[string]string)
 }
 
 func (c *Context) String(status int, message string) error {
-	return c.JSON(status, message)
+	return c.Render(status, message)
+}
+
+func (c *Context) JSON(code int, value interface{}) error {
+	c.writeContentType("application/json")
+	return c.Render(code, value)
 }
 
 func (c *Context) Render(code int, value interface{}) error {
 	enc := json.NewEncoder(c.Response)
 	enc.SetIndent("", "  ")
 
-	c.Status(code)
+	c.setStatus(code)
 
 	return enc.Encode(value)
 }
 
-func (c *Context) SetStatus(code int) error {
-	c.Status(code)
+func (c *Context) Status(code int) error {
+	c.setStatus(code)
 	return nil
 }
 
@@ -48,7 +56,7 @@ func (c *Context) Bind(t interface{}) error {
 	return enc.Decode(t)
 }
 
-func (c *Context) Status(code int) {
+func (c *Context) setStatus(code int) {
 	c.Response.WriteHeader(code)
 }
 
@@ -58,12 +66,4 @@ func (c *Context) writeContentType(value string) {
 	if header.Get(HeaderContentType) == "" {
 		header.Set(HeaderContentType, value)
 	}
-}
-
-func (c *Context) Update(r *http.Request, w http.ResponseWriter) {
-	c.Request = r
-	c.Response = w
-	c.Method = r.Method
-	c.Headers = r.Header
-	c.Params = make(map[string]string)
 }
